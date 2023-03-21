@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 11:41:30 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/21 13:31:29 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/21 13:42:08 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,5 @@ int	main(int ac, char **av, char **envp)
 		wait(&pipex.child);
 		pipex.i++;
 	}
-	//close_pipes(&pipex);
 	return (0);
 }
