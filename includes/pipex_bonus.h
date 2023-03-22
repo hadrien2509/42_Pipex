@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 12:03:48 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/21 13:31:44 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/22 18:57:11 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PIPEX_BONUS_H
 
 # include "../ft_printf/ft_printf.h"
+# include "../GNL/get_next_line_bonus.h"
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
@@ -30,6 +31,7 @@ typedef struct s_pipex
 	int		pid;
 	int		*pipeline;
 	int		i;
+	int		here_doc;
 }					t_pipex;
 
 /* ************************************************************************** */
@@ -41,6 +43,7 @@ typedef struct s_pipex
 # define ERR_INPUT "Pipex executable must take 4 arguments\n"
 # define ERR_PIPE "Pipe"
 # define ERR_CMD "Command not found\n"
+# define ERR_HEREDOC "here_doc\n"
 
 /* ************************************************************************** */
 /*                                PIPEX_FCTS                                  */
@@ -53,6 +56,8 @@ void	ft_free_pipex(t_pipex *pipex);
 void	select_process(t_pipex pipex, char **av, char **envp, int ac);
 void	pipe_process(t_pipex pipex, char **av, char **envp);
 void	close_pipes(t_pipex *pipex);
+char	**ft_getallpaths(char **envp);
+int		here_doc(t_pipex *pipex, char **av);
 
 /* ************************************************************************** */
 /*                                LIBFT_FCTS                                  */

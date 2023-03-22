@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 17:11:46 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/21 13:31:10 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/22 18:51:04 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ char	**ft_pathname(char *arg, t_pipex *pipex, char **envp)
 	if (!pipex->tab)
 		return (0);
 	cmd = pipex->tab[0];
-	pipex->paths = ft_getallpaths(envp);
-	if (!pipex->paths)
-		return (0);
+	// pipex->paths = ft_getallpaths(envp);
+	// if (!pipex->paths)
+	// 	return (0);
 	pipex->tab[0] = ft_getcmdpath(pipex->paths, cmd);
 	free(cmd);
 	if (!pipex->tab[0])
@@ -77,13 +77,14 @@ void	child_process(t_pipex pipex, char **av, char **envp)
 	close(pipex.infile);
 	dup2(pipex.pipeline[1], 1);
 	close(pipex.pipeline[0]);
-	pipex.tab = ft_pathname(av[2], &pipex, envp);
+	pipex.tab = ft_pathname(av[2 + pipex.here_doc], &pipex, envp);
 	if (!pipex.tab)
 	{
 		ft_free_pipex(&pipex);
 		show_err(ERR_CMD);
 		exit(1);
 	}
+	//close_pipes(&pipex);
 	execve(pipex.tab[0], pipex.tab, envp);
 }
 
@@ -92,25 +93,13 @@ void	pipe_process(t_pipex pipex, char **av, char **envp)
 	dup2(pipex.pipeline[pipex.i * 2 - 2], 0);
 	close(pipex.pipeline[pipex.i * 2 - 1]);
 	dup2(pipex.pipeline[pipex.i * 2 + 1], 1);
-	pipex.tab = ft_pathname(av[2 + pipex.i], &pipex, envp);
+	pipex.tab = ft_pathname(av[2 + pipex.i + pipex.here_doc], &pipex, envp);
 	if (!pipex.tab)
 	{
 		ft_free_pipex(&pipex);
 		show_err(ERR_CMD);
 		exit(1);
 	}
+	//close_pipes(&pipex);
 	execve(pipex.tab[0], pipex.tab, envp);
 }
-
-/*void	close_pipes(t_pipex *pipex)
-{
-	int	i;
-
-	i = 0;
-	while (i < 10)
-	{
-		close(pipex->pipeline[i]);
-		i++;
-	}
-}
-*/

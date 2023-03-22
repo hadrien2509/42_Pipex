@@ -1,13 +1,4 @@
-okokads dsa  ads fa d
-dadsf
-dadnsff
-a1
-dadsf  das f  
-ads
-a1
-dadsnfad
-
-
-f
-nadsd
-saf
+pipe heredoc> sdfafadsffdsffsffaafafaalalaland
+pipe heredoc> dsfa dfaffdafdfadfasdfadfafdfaffaflalaland 
+pipe heredoc> asdf sad dsafasf lalaland
+pipe heredoc> lalaland
