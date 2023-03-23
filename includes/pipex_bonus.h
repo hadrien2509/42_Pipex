@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 12:03:48 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/22 18:57:11 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/23 18:38:41 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_pipex
 	int		*pipeline;
 	int		i;
 	int		here_doc;
+	int		pipelen;
 }					t_pipex;
 
 /* ************************************************************************** */
@@ -40,16 +41,16 @@ typedef struct s_pipex
 
 # define ERR_INFILE "Infile error\n"
 # define ERR_OUTFILE "Outfile error\n"
-# define ERR_INPUT "Pipex executable must take 4 arguments\n"
+# define ERR_INPUT "Invalid number of arguments\n"
 # define ERR_PIPE "Pipe"
 # define ERR_CMD "Command not found\n"
-# define ERR_HEREDOC "here_doc\n"
+# define ERR_HEREDOC "here_doc error\n"
 
 /* ************************************************************************** */
 /*                                PIPEX_FCTS                                  */
 /* ************************************************************************** */
 
-int		show_err(char *err);
+void	show_err(char *err);
 void	child_process(t_pipex pipex, char **av, char **envp);
 char	**ft_pathname(char *arg, t_pipex *pipex, char **envp);
 void	ft_free_pipex(t_pipex *pipex);
@@ -57,7 +58,7 @@ void	select_process(t_pipex pipex, char **av, char **envp, int ac);
 void	pipe_process(t_pipex pipex, char **av, char **envp);
 void	close_pipes(t_pipex *pipex);
 char	**ft_getallpaths(char **envp);
-int		here_doc(t_pipex *pipex, char **av);
+void	here_doc(t_pipex *pipex, char **av);
 
 /* ************************************************************************** */
 /*                                LIBFT_FCTS                                  */

@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 17:11:46 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/22 18:51:04 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/23 18:22:09 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,8 @@ char	**ft_pathname(char *arg, t_pipex *pipex, char **envp)
 	if (!pipex->tab)
 		return (0);
 	cmd = pipex->tab[0];
-	// pipex->paths = ft_getallpaths(envp);
-	// if (!pipex->paths)
-	// 	return (0);
+	if (!cmd)
+		return (0);
 	pipex->tab[0] = ft_getcmdpath(pipex->paths, cmd);
 	free(cmd);
 	if (!pipex->tab[0])
@@ -82,7 +81,6 @@ void	child_process(t_pipex pipex, char **av, char **envp)
 	{
 		ft_free_pipex(&pipex);
 		show_err(ERR_CMD);
-		exit(1);
 	}
 	//close_pipes(&pipex);
 	execve(pipex.tab[0], pipex.tab, envp);
@@ -98,7 +96,6 @@ void	pipe_process(t_pipex pipex, char **av, char **envp)
 	{
 		ft_free_pipex(&pipex);
 		show_err(ERR_CMD);
-		exit(1);
 	}
 	//close_pipes(&pipex);
 	execve(pipex.tab[0], pipex.tab, envp);
