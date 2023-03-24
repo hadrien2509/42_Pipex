@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 17:11:46 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/21 13:59:47 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/24 18:35:55 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*ft_getcmdpath(char **paths, char *cmd)
 		temp = ft_strjoin("/", cmd);
 		cmd_path = ft_strjoin(paths[i], temp);
 		free(temp);
-		if (access(cmd_path, F_OK) == 0)
+		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		free(cmd_path);
 		i++;
@@ -61,13 +61,21 @@ char	**ft_pathname(char *arg, t_pipex *pipex, char **envp)
 	if (!pipex->tab)
 		return (0);
 	cmd = pipex->tab[0];
-	pipex->paths = ft_getallpaths(envp);
-	if (!pipex->paths)
-		return (0);
+	if (!cmd)
+	{
+		ft_free_pipex(pipex);
+		show_err(ERR_CMD);
+	}
 	pipex->tab[0] = ft_getcmdpath(pipex->paths, cmd);
-	free(cmd);
 	if (!pipex->tab[0])
-		return (0);
+	{
+		write(2, cmd, ft_strlen(cmd));
+		write(2, ": ", 2);
+		free(cmd);
+		ft_free_pipex(pipex);
+		show_err(ERR_CMD);
+	}
+	free(cmd);
 	return (pipex->tab);
 }
 
@@ -82,8 +90,11 @@ void	child_process(t_pipex pipex, char **av, char **envp)
 	if (!pipex.tab)
 	{
 		ft_free_pipex(&pipex);
-		show_err(ERR_CMD);
-		exit(1);
+		exit (1);
 	}
-	execve(pipex.tab[0], pipex.tab, envp);
+	if (execve(pipex.tab[0], pipex.tab, envp) == -1)
+	{
+		ft_free_pipex(&pipex);
+		exit (1);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 11:41:30 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/23 18:36:45 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/24 18:51:55 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,52 +24,30 @@ void	close_pipes(t_pipex *pipex)
 	}
 }
 
-// static int	creat_pipes(t_pipex *pipex)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < 2)
-// 	{
-// 		if (pipe(pipex->pipeline + 2 * i) < 0)
-// 			return (show_err(ERR_PIPE));
-// 		i++;
-// 	}
-// 	return (0);
-// }
+void	show_perr(char *err)
+{
+	perror(err);
+	exit (0);
+}
 
 void	show_err(char *err)
 {
 	write(2, err, ft_strlen(err));
+	if (ft_strncmp(err, ERR_CMD, ft_strlen(ERR_CMD)) == 0)
+		exit (127);
 	exit (1);
 }
 
 void	ft_free_pipex(t_pipex *pipex)
 {
-	int		i;
-
 	if (pipex->tab)
-	{
-		i = 0;
-		while (pipex->tab[i])
-		{
-			free(pipex->tab[i]);
-			i++;
-		}
-		free(pipex->tab);
-	}
+		ft_free_tab(pipex->tab);
 	if (pipex->paths)
-	{
-		i = 0;
-		while (pipex->paths[i])
-		{
-			free(pipex->paths[i]);
-			i++;
-		}
-		free(pipex->paths);
-	}
+		ft_free_tab(pipex->paths);
 	if (pipex->pipeline)
 		free(pipex->pipeline);
+	if (pipex->here_doc)
+		unlink(".heredoc_tmp");
 }
 
 void	parent_process(t_pipex pipex, char **av, char **envp)
@@ -77,17 +55,20 @@ void	parent_process(t_pipex pipex, char **av, char **envp)
 	char	**tab;
 
 	dup2(pipex.pipeline[pipex.i * 2 - 2], 0);
-	close(pipex.pipeline[pipex.i * 2 - 1]);
 	dup2(pipex.outfile, 1);
 	close(pipex.outfile);
+	close_pipes(&pipex);
 	ft_pathname(av[2 + pipex.i + pipex.here_doc], &pipex, envp);
 	if (!pipex.tab)
 	{
 		ft_free_pipex(&pipex);
-		show_err(ERR_CMD);
+		exit (1);
 	}
-	close_pipes(&pipex);
-	execve(pipex.tab[0], pipex.tab, envp);
+	if (execve(pipex.tab[0], pipex.tab, envp) == -1)
+	{
+		ft_free_pipex(&pipex);
+		exit (1);
+	}
 }
 
 void	select_process(t_pipex pipex, char **av, char **envp, int ac)
@@ -130,30 +111,31 @@ void	ft_setfd(t_pipex *pipex, int ac, char **av)
 	pipex->here_doc = 0;
 	pipex->outfile = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (pipex->outfile == -1)
-		show_err(ERR_OUTFILE);
-	if (ft_strncmp("here_doc", av[1], ft_strlen(av[1])) == 0)
+		show_perr(av[ac - 1]);
+	if (ft_strncmp("here_doc", av[1], 9) == 0)
 	{
 		pipex->here_doc = 1;
 		if (ac < 6)
 			show_err(ERR_INPUT);
 		here_doc(pipex, av);
 		pipex->infile = open(".heredoc_tmp", O_RDONLY);
-		if (pipex->infile < 0)
+		if (pipex->infile == -1)
 		{
 			unlink(".heredoc_tmp");
-			show_err(ERR_HEREDOC);
+			show_perr(".heredoc_tmp");
 		}
 	}
 	else
 	{
 		pipex->infile = open(av[1], O_RDONLY);
 		if (pipex->infile == -1)
-			show_err(ERR_INFILE);
+			show_perr(av[1]);
 	}
 }
 
 void	ft_setstruct(t_pipex *pipex, int ac, char **envp)
 {
+	pipex->tab = 0;
 	pipex->pipeline = (int *)malloc(sizeof(int) * (2 * pipex->pipelen));
 	if (!pipex->pipeline)
 		show_err(ERR_PIPE);
@@ -163,7 +145,18 @@ void	ft_setstruct(t_pipex *pipex, int ac, char **envp)
 		ft_free_pipex(pipex);
 		exit (1);
 	}
-	pipex->tab = 0;
+	pipex->i = 0;
+	pipex->pipelen = ac - 4 - pipex->here_doc;
+}
+
+static void	ft_exit(t_pipex *pipex, int e, char *str)
+{
+	close_pipes(pipex);
+	ft_free_pipex(pipex);
+	if (e == 1)
+		show_err(str);
+	if (e == 2)
+		show_perr(str);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -174,19 +167,17 @@ int	main(int ac, char **av, char **envp)
 		show_err(ERR_INPUT);
 	ft_setfd(&pipex, ac, av);
 	ft_setstruct(&pipex, ac, envp);
-	pipex.i = 0;
-	pipex.pipelen = ac - 4 - pipex.here_doc;
-	while (pipex.i <= ac - 4 - pipex.here_doc)
+	while (pipex.i <= pipex.pipelen)
 	{
 		if (pipex.i < pipex.pipelen && pipe(pipex.pipeline + pipex.i * 2) == -1)
-			show_err(ERR_PIPE);
+			ft_exit(&pipex, 2, "Pipe");
 		pipex.child = fork();
+		if (pipex.child == -1)
+			ft_exit(&pipex, 1, ERR_FORK);
 		if (!pipex.child)
 			select_process(pipex, av, envp, ac);
 		pipex.i++;
 	}
-	if (pipex.here_doc)
-		unlink(".heredoc_tmp");
 	close_pipes(&pipex);
 	waitpid(-1, NULL, 0);
 	ft_free_pipex(&pipex);

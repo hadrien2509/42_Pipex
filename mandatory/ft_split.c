@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:38:03 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/12 18:50:11 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/24 14:31:15 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ static char	*ft_range(const char *str, int min, int max)
 	return (range);
 }
 
-int	ft_free_tab(char **tab)
+void	ft_free_tab(char **tab)
 {
 	int	i;
 
 	i = 0;
 	if (!tab)
-		return (-1);
+		return ;
 	while (tab[i])
 	{
 		free(tab[i]);
+		i++;
 	}
 	free(tab);
-	return (0);
 }
 
 static void	set_tab(const char *str, char c, char **tab)
