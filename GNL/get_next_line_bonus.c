@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 15:08:22 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/22 18:11:34 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:49:14 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*ft_finish_line(int fd, char *buffer, char *line, int length)
 	}
 	return (line);
 }
-#include <stdio.h>
+
 char	*get_next_line(int fd)
 {
 	static char		buffer_array[OPEN_MAX][BUFFER_SIZE + 1];

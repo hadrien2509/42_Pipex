@@ -1,4 +1,0 @@
-pipe heredoc> sdfafadsffdsffsffaafafaalalaland
-pipe heredoc> dsfa dfaffdafdfadfasdfadfafdfaffaflalaland 
-pipe heredoc> asdf sad dsafasf lalaland
-pipe heredoc> lalaland

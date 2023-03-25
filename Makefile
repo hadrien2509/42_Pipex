@@ -6,17 +6,17 @@
 #    By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/19 14:22:07 by hgeissle          #+#    #+#              #
-#    Updated: 2023/03/22 17:55:21 by hgeissle         ###   ########.fr        #
+#    Updated: 2023/03/25 17:50:47 by hgeissle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 
-SRC = mandatory/pipex.c mandatory/errors.c mandatory/child.c
+SRC = mandatory/pipex.c mandatory/errors.c mandatory/child.c mandatory/exit.c
 
-SRC_LIBFT = ft_printf/ft_printf.c ft_printf/ft_printf_tools.c mandatory/ft_split.c mandatory/ft_strjoin.c mandatory/ft_strncmp.c mandatory/libft_fcts.c
+SRC_LIBFT = mandatory/ft_split.c mandatory/ft_strjoin.c mandatory/ft_strncmp.c mandatory/libft_fcts.c
 
-SRC_BONUS = bonus/pipex_bonus.c bonus/child_bonus.c GNL/get_next_line_bonus.c GNL/get_next_line_utils_bonus.c
+SRC_BONUS = bonus/pipex_bonus.c bonus/child_bonus.c bonus/errors_bonus.c bonus/exit_bonus.c bonus/here_doc_bonus.c GNL/get_next_line_bonus.c GNL/get_next_line_utils_bonus.c
 
 FLAGS = -Wall -Wextra -Werror
 INCLUDE = -fsanitize=address

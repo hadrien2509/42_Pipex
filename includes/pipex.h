@@ -6,14 +6,13 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 12:03:48 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/24 18:48:01 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/25 17:53:35 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-# include "../ft_printf/ft_printf.h"
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
@@ -53,6 +52,7 @@ void	child_process(t_pipex pipex, char **av, char **envp);
 char	**ft_pathname(char *arg, t_pipex *pipex, char **envp);
 void	ft_free_pipex(t_pipex *pipex);
 char	**ft_getallpaths(char **envp);
+void	ft_exit(t_pipex *pipex, int e, char *str);
 
 /* ************************************************************************** */
 /*                                LIBFT_FCTS                                  */

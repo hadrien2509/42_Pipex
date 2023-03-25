@@ -1,27 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/30 14:09:01 by hgeissle          #+#    #+#             */
-/*   Updated: 2022/10/31 15:15:48 by hgeissle         ###   ########.fr       */
+/*   Created: 2023/03/25 16:30:21 by hgeissle          #+#    #+#             */
+/*   Updated: 2023/03/25 16:31:08 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "../includes/pipex.h"
 
-# include <stdarg.h>
-# include <unistd.h>
-# include <limits.h>
+void	ft_free_pipex(t_pipex *pipex)
+{
+	close(pipex->infile);
+	close(pipex->outfile);
+	if (pipex->tab)
+		ft_free_tab(pipex->tab);
+	if (pipex->paths)
+		ft_free_tab(pipex->paths);
+}
 
-int		ft_printf(const char *str, ...);
-int		ft_printchar(char c);
-int		ft_printstr(char *str);
-int		ft_printnbr(int nbr, char *base, unsigned int baselen);
-int		ft_printunbr(unsigned int unbr, char *base, unsigned int baselen);
-int		ft_printptr(unsigned long int nbr);
-
-#endif
+void	ft_exit(t_pipex *pipex, int e, char *str)
+{
+	ft_free_pipex(pipex);
+	if (e == 1)
+		show_err(str);
+	if (e == 2)
+		show_perr(str);
+	else
+		exit (1);
+}
