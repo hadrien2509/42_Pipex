@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 11:41:30 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/25 16:36:04 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/30 14:14:57 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	parent_process(t_pipex pipex, char **av, char **envp)
 		ft_free_pipex(&pipex);
 		exit (1);
 	}
-	if (execve(pipex.tab[0], pipex.tab, envp) == -1)
+	if (execve(pipex.path, pipex.tab, envp) == -1)
 	{
 		ft_free_pipex(&pipex);
 		exit (1);
