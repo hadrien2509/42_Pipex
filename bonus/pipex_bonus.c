@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 11:41:30 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/25 17:31:06 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/30 12:49:05 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	parent_process(t_pipex pipex, char **av, char **envp)
 	dup2(pipex.outfile, 1);
 	close(pipex.outfile);
 	close_pipes(&pipex);
-	ft_pathname(av[2 + pipex.i + pipex.here_doc], &pipex, envp);
+	pipex.tab = ft_pathname(av[2 + pipex.i + pipex.here_doc], &pipex, envp);
 	if (!pipex.tab)
 	{
 		ft_free_pipex(&pipex);
@@ -73,10 +73,12 @@ void	ft_setfd(t_pipex *pipex, int ac, char **av)
 void	ft_setstruct(t_pipex *pipex, int ac, char **envp)
 {
 	pipex->tab = 0;
-	pipex->pipeline = (int *)malloc(sizeof(int) * (2 * pipex->pipelen));
+	pipex->pipelen = ac - 4 - pipex->here_doc;
+	pipex->pipeline = (int *)malloc(sizeof(int) * (2 * pipex->pipelen + 1));
 	if (!pipex->pipeline)
 		show_err(ERR_PIPE);
-	pipex->paths = ft_getallpaths(envp);
+	pipex->pipeline[2 * pipex->pipelen] = 0;
+	ft_getallpaths(pipex, envp);
 	if (!pipex->paths)
 	{
 		close(pipex->infile);
@@ -85,7 +87,6 @@ void	ft_setstruct(t_pipex *pipex, int ac, char **envp)
 		exit (1);
 	}
 	pipex->i = 0;
-	pipex->pipelen = ac - 4 - pipex->here_doc;
 }
 
 int	main(int ac, char **av, char **envp)
@@ -96,10 +97,9 @@ int	main(int ac, char **av, char **envp)
 		show_err(ERR_INPUT);
 	ft_setfd(&pipex, ac, av);
 	ft_setstruct(&pipex, ac, envp);
+	creat_pipes(&pipex);
 	while (pipex.i <= pipex.pipelen)
 	{
-		if (pipex.i < pipex.pipelen && pipe(pipex.pipeline + pipex.i * 2) == -1)
-			ft_exit(&pipex, 2, "Pipe");
 		pipex.child = fork();
 		if (pipex.child == -1)
 			ft_exit(&pipex, 1, ERR_FORK);
@@ -107,8 +107,11 @@ int	main(int ac, char **av, char **envp)
 			select_process(pipex, av, envp, ac);
 		pipex.i++;
 	}
-	close_pipes(&pipex);
-	waitpid(-1, NULL, 0);
-	ft_free_pipex(&pipex);
+	ft_exit(&pipex, 0, NULL);
+	while (pipex.i >= 0)
+	{
+		waitpid(-1, NULL, 0);
+		pipex.i--;
+	}
 	return (0);
 }

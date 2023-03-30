@@ -6,13 +6,13 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 17:11:46 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/25 17:45:08 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/28 19:36:38 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-char	**ft_getallpaths(char **envp)
+void	ft_getallpaths(t_pipex *pipex, char **envp)
 {
 	char	**paths;
 	char	*line;
@@ -27,10 +27,7 @@ char	**ft_getallpaths(char **envp)
 		}
 		envp++;
 	}
-	paths = ft_split(line, ':');
-	if (!paths)
-		return (0);
-	return (paths);
+	pipex->paths = ft_split(line, ':');
 }
 
 char	*ft_getcmdpath(char **paths, char *cmd)
@@ -84,7 +81,8 @@ void	child_process(t_pipex pipex, char **av, char **envp)
 	dup2(pipex.infile, 0);
 	close(pipex.infile);
 	dup2(pipex.pipeline[1], 1);
-	close_pipes(&pipex);
+	close(pipex.pipeline[0]);
+	close(pipex.pipeline[1]);
 	pipex.tab = ft_pathname(av[2 + pipex.here_doc], &pipex, envp);
 	if (!pipex.tab)
 	{

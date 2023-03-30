@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 12:03:48 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/25 17:53:30 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/28 19:19:54 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,11 @@ void	ft_free_pipex(t_pipex *pipex);
 void	select_process(t_pipex pipex, char **av, char **envp, int ac);
 void	pipe_process(t_pipex pipex, char **av, char **envp);
 void	close_pipes(t_pipex *pipex);
-char	**ft_getallpaths(char **envp);
+void	ft_getallpaths(t_pipex *pipex, char **envp);
 void	here_doc(t_pipex *pipex, char **av);
 void	show_perr(char *err);
 void	ft_exit(t_pipex *pipex, int e, char *str);
+void	creat_pipes(t_pipex *pipex);
 
 /* ************************************************************************** */
 /*                                LIBFT_FCTS                                  */

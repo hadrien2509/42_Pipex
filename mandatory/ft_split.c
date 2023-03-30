@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/04 16:38:03 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/24 14:31:15 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/28 19:34:19 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,15 @@ static void	set_tab(const char *str, char c, char **tab)
 char	**ft_split(char const *s, char c)
 {
 	char	**tab;
+	int		len;
 
 	if (!s)
 		return (NULL);
-	tab = malloc(sizeof(char *) * (ft_strslen(s, c) + 1));
+	len = ft_strslen(s, c);
+	tab = malloc(sizeof(char *) * (len + 1));
 	if (!tab)
 		return (NULL);
-	tab[ft_strslen(s, c)] = 0;
+	tab[len] = 0;
 	set_tab(s, c, tab);
 	return (tab);
 }
