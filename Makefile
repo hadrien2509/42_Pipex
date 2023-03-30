@@ -6,7 +6,7 @@
 #    By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/19 14:22:07 by hgeissle          #+#    #+#              #
-#    Updated: 2023/03/30 14:09:01 by hgeissle         ###   ########.fr        #
+#    Updated: 2023/03/30 14:42:31 by hgeissle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRC_LIBFT = mandatory/ft_split.c mandatory/ft_strjoin.c mandatory/ft_strncmp.c m
 SRC_BONUS = bonus/pipex_bonus.c bonus/child_bonus.c bonus/errors_bonus.c bonus/exit_bonus.c bonus/here_doc_bonus.c GNL/get_next_line_bonus.c GNL/get_next_line_utils_bonus.c
 
 FLAGS = -Wall -Wextra -Werror
-INCLUDE = -fsanitize=address
+INCLUDE = 
 AR = ar rcs
 RM = rm -f
 OBJS = $(SRC:.c=.o)

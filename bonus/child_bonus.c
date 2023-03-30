@@ -6,7 +6,7 @@
 /*   By: hgeissle <hgeissle@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 17:11:46 by hgeissle          #+#    #+#             */
-/*   Updated: 2023/03/30 13:40:27 by hgeissle         ###   ########.fr       */
+/*   Updated: 2023/03/30 14:32:56 by hgeissle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ char	*ft_getcmdpath(char **paths, t_pipex *pipex)
 	i = 0;
 	if (pipex->cmd[0] == '/')
 	{
-		if (access(pipex->cmd, X_OK) == 0)
-			return (cmd_path);
+		if (ft_strlen(pipex->cmd) != 1 && access(pipex->cmd, X_OK) == 0)
+			return (pipex->cmd);
 		else
 			return (0);
 	}
